@@ -4,7 +4,7 @@ import threading
 from itertools import permutations
 
 # ______________________________________________________________________________________________________________________________Fun Variables
-diagonalsUnabled = True
+diagonalsUnabled = False
 priorizeDiagonals = False
 drawWeb = True
 simultaneousDraw = True
@@ -17,9 +17,9 @@ lagLastDraw = 0.05
 
 
 
-numberHorizontalSquares = 50
+numberHorizontalSquares = 74
 # 24
-numberVerticalSquares = 32
+numberVerticalSquares = 48
 # 16
 screenHeight = 1000
 # 998
@@ -206,6 +206,9 @@ def drawOrErase(posX, posY):
         if colorOfSquares[str(posX), str(posY)] == "black":
             colorOfSquares[str(posX), str(posY)] = "white"
             listDontCheck.remove((cubeStartX, cubeStartY))
+            pygame.draw.rect(screen, eval(colorOfSquares[str(posX), str(posY)]), (
+                (marginLeft + posX * (sizeCubes + sizeBorders) + sizeBorders),
+                (marginUp + posY * (sizeCubes + sizeBorders) + sizeBorders), sizeCubes, sizeCubes))
 
 
 def drawTheButtons():
@@ -354,6 +357,7 @@ def findShortestPath1(intBlock, listOfFinalBlocks, listDontCheck, listBlocksTele
                         break
                     except:
                         pass
+
         listOfToReturn.append(list(reversed(ListPath)))
         ListPath = []
         if listOfToReturn == [[]]:
@@ -386,8 +390,6 @@ def orderOfPointsToPassBy(endCube, startCube, listMoney, allLinks):
                 if connection[0] == EndCube and connection[1] == possibility[-1]:
                     count += connection[2]
             webs.append([possibility, count])
-
-
         shortest = []
         for web in webs:
             if shortest == []:
@@ -396,11 +398,7 @@ def orderOfPointsToPassBy(endCube, startCube, listMoney, allLinks):
                 if web[-1] < shortest[-1]:
                     shortest = web
         return shortest[0]
-
     listPossibilities = findPossibilities(EndCube, StartCube, listMoney)
-
-    for connection in allLinks:
-        pass
     return findShortestWeb(listPossibilities)
 
 
@@ -455,8 +453,6 @@ def drawShortestPath(listToDraw):
                             (marginLeft + cube[0] * (sizeCubes + sizeBorders) + sizeBorders),
                             (marginUp + cube[1] * (sizeCubes + sizeBorders) + sizeBorders), sizeCubes, sizeCubes))
                         pygame.display.update()
-
-
                     except:
                         print("couldn't make a cube color darker")
 
@@ -710,12 +706,9 @@ for x in range(0, len(listPointsPassingByInOrder)):
             except:
                 pass
 
-
-
 for listOfList in listOflistOfPaths:
     for list in listOfList:
         try:
-
             if list[0] == EndCube and list[-1] == finalPath[-1][-1]:
                 revertedList = []
                 for coordinates in list:
